@@ -22,12 +22,27 @@ RUN pip install --no-cache-dir \
     'passlib>=1.7.4,<1.8.0'
 
 # Download and extract InfCloud from official source
-RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/* && \
+RUN apt-get update && apt-get install -y unzip wget && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /tmp/infcloud && \
-    curl -L "https://www.inf-it.com/InfCloud_${INFCLOUD_VERSION}.zip" -o /tmp/infcloud.zip && \
+    echo "Downloading InfCloud..." && \
+    wget -O /tmp/infcloud.zip "https://www.inf-it.com/InfCloud_${INFCLOUD_VERSION}.zip" && \
+    echo "Downloaded file size:" && ls -la /tmp/infcloud.zip && \
+    echo "Extracting InfCloud..." && \
+    unzip -l /tmp/infcloud.zip && \
     unzip /tmp/infcloud.zip -d /tmp/ && \
-    mv /tmp/InfCloud_${INFCLOUD_VERSION}/* /tmp/infcloud/ && \
-    rm -rf /tmp/infcloud.zip /tmp/InfCloud_${INFCLOUD_VERSION}
+    echo "Contents of /tmp after extraction:" && ls -la /tmp/ && \
+    if [ -d "/tmp/InfCloud_${INFCLOUD_VERSION}" ]; then \
+        mv /tmp/InfCloud_${INFCLOUD_VERSION}/* /tmp/infcloud/; \
+    elif [ -d "/tmp/infcloud_${INFCLOUD_VERSION}" ]; then \
+        mv /tmp/infcloud_${INFCLOUD_VERSION}/* /tmp/infcloud/; \
+    else \
+        echo "Looking for any infcloud directory..." && \
+        find /tmp -name "*infcloud*" -type d && \
+        mv /tmp/*infcloud*/* /tmp/infcloud/ 2>/dev/null || \
+        mv /tmp/*InfCloud*/* /tmp/infcloud/ 2>/dev/null || \
+        echo "No infcloud directory found, listing all:" && ls -la /tmp/; \
+    fi && \
+    rm -rf /tmp/infcloud.zip /tmp/*nfCloud* /tmp/*infcloud*
 
 # Production stage
 FROM python:3.11-slim
