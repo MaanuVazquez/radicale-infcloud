@@ -3,7 +3,6 @@
 A complete, ready-to-deploy Docker container that combines:
 
 - **Radicale** - CalDAV and CardDAV server
-- **Radicale IMAP** - IMAP support for Radicale
 - **InfCloud** - Modern web interface for calendar and contacts
 
 **Perfect for Portainer deployments!** This is a simplified, single-process container that runs everything through Radicale's built-in web server.
@@ -351,7 +350,6 @@ This project is released under the [Unlicense](LICENSE) - see the LICENSE file f
                    ┌─────────────────────────▼──┐
                    │         Radicale           │
                    │   (CalDAV/CardDAV/Web)     │
-                   │       + IMAP               │
                    │   + InfCloud Interface     │
                    └────────────────────────────┘
 ```

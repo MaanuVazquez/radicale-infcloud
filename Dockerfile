@@ -1,4 +1,4 @@
-# Simplified Dockerfile for Radicale + IMAP + InfCloud (Single Process)
+# Simplified Dockerfile for Radicale + InfCloud (Single Process)
 FROM python:3.11-slim as builder
 
 # Install build dependencies
@@ -13,15 +13,13 @@ RUN apt-get update && \
 
 # Set versions for reproducible builds
 ENV RADICALE_VERSION=3.1.9
-ENV RADICALE_IMAP_VERSION=0.9.0
 ENV INFCLOUD_VERSION=0.13.1
 
-# Install Python packages
+# Install Python packages with compatible versions
 RUN pip install --no-cache-dir \
     radicale==$RADICALE_VERSION \
-    radicale-imap==$RADICALE_IMAP_VERSION \
-    bcrypt \
-    passlib
+    'bcrypt>=3.2.0,<4.0.0' \
+    'passlib>=1.7.4,<1.8.0'
 
 # Download and extract InfCloud
 RUN mkdir -p /tmp/infcloud && \

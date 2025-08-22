@@ -74,3 +74,8 @@ build/
 tmp/
 temp/
 .tmp/
+
+# Exclude build context that's not needed
+**/.git
+**/node_modules
+**/.DS_Store
