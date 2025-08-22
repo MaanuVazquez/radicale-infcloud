@@ -1,4 +1,4 @@
-// InfCloud Configuration
+// InfCloud Configuration for Radicale
 var globalInterfaceLanguage = 'en_US';
 var globalInterfaceCustomLanguages = [];
 

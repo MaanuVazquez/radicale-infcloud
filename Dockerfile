@@ -21,28 +21,32 @@ RUN pip install --no-cache-dir \
     'bcrypt>=3.2.0,<4.0.0' \
     'passlib>=1.7.4,<1.8.0'
 
-# Download and extract InfCloud from official source
+# Download and extract InfCloud from official source with robust error handling
 RUN apt-get update && apt-get install -y unzip wget && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /tmp/infcloud && \
-    echo "Downloading InfCloud..." && \
-    wget -O /tmp/infcloud.zip "https://www.inf-it.com/InfCloud_${INFCLOUD_VERSION}.zip" && \
-    echo "Downloaded file size:" && ls -la /tmp/infcloud.zip && \
+    echo "Attempting to download InfCloud from multiple sources..." && \
+    (wget --timeout=30 --tries=3 -O /tmp/infcloud.zip "https://www.inf-it.com/InfCloud_${INFCLOUD_VERSION}.zip" || \
+     wget --timeout=30 --tries=3 -O /tmp/infcloud.zip "https://inf-it.com/InfCloud_${INFCLOUD_VERSION}.zip" || \
+     curl -L --max-time 30 --retry 3 "https://www.inf-it.com/InfCloud_${INFCLOUD_VERSION}.zip" -o /tmp/infcloud.zip || \
+     curl -L --max-time 30 --retry 3 "https://inf-it.com/InfCloud_${INFCLOUD_VERSION}.zip" -o /tmp/infcloud.zip) && \
+    echo "Download completed. File info:" && \
+    ls -la /tmp/infcloud.zip && \
+    file /tmp/infcloud.zip && \
     echo "Extracting InfCloud..." && \
-    unzip -l /tmp/infcloud.zip && \
-    unzip /tmp/infcloud.zip -d /tmp/ && \
-    echo "Contents of /tmp after extraction:" && ls -la /tmp/ && \
-    if [ -d "/tmp/InfCloud_${INFCLOUD_VERSION}" ]; then \
-        mv /tmp/InfCloud_${INFCLOUD_VERSION}/* /tmp/infcloud/; \
-    elif [ -d "/tmp/infcloud_${INFCLOUD_VERSION}" ]; then \
-        mv /tmp/infcloud_${INFCLOUD_VERSION}/* /tmp/infcloud/; \
+    unzip -q /tmp/infcloud.zip -d /tmp/extract/ && \
+    echo "Extraction completed. Contents:" && \
+    find /tmp/extract -type f -name "*.html" -o -name "*.js" | head -10 && \
+    echo "Moving files to final location..." && \
+    (if [ -d "/tmp/extract/InfCloud_${INFCLOUD_VERSION}" ]; then \
+        cp -r /tmp/extract/InfCloud_${INFCLOUD_VERSION}/* /tmp/infcloud/; \
+    elif [ -d "/tmp/extract/infcloud" ]; then \
+        cp -r /tmp/extract/infcloud/* /tmp/infcloud/; \
     else \
-        echo "Looking for any infcloud directory..." && \
-        find /tmp -name "*infcloud*" -type d && \
-        mv /tmp/*infcloud*/* /tmp/infcloud/ 2>/dev/null || \
-        mv /tmp/*InfCloud*/* /tmp/infcloud/ 2>/dev/null || \
-        echo "No infcloud directory found, listing all:" && ls -la /tmp/; \
-    fi && \
-    rm -rf /tmp/infcloud.zip /tmp/*nfCloud* /tmp/*infcloud*
+        find /tmp/extract -mindepth 1 -maxdepth 1 -type d -exec cp -r {}/* /tmp/infcloud/ \; ; \
+    fi) && \
+    echo "Final InfCloud files:" && \
+    ls -la /tmp/infcloud/ && \
+    rm -rf /tmp/infcloud.zip /tmp/extract
 
 # Production stage
 FROM python:3.11-slim

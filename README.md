@@ -3,7 +3,7 @@
 A complete, ready-to-deploy Docker container that combines:
 
 - **Radicale** - CalDAV and CardDAV server
-- **InfCloud** - Proven web interface for calendar and contacts (CalDAV/CardDAV web client)
+- **InfCloud** - Full-featured CalDAV/CardDAV web client interface
 
 **Perfect for Portainer deployments!** This is a simplified, single-process container that runs everything through Radicale's built-in web server.
 
@@ -103,7 +103,10 @@ docker-compose up -d
 1. Open http://localhost:5232/.web/ in your browser
 2. Enter your username and password
 3. Create calendars and address books
-4. Manage events and contacts through the web interface
+4. Manage events and contacts through the full InfCloud interface
+5. Use drag & drop to organize events and contacts
+6. Access multiple calendars and address books
+7. Enjoy full calendar/contact management features
 
 ### CalDAV/CardDAV Clients
 
@@ -161,13 +164,13 @@ environment:
 
 ### Volume Mounts
 
-| Path                              | Description               |
-| --------------------------------- | ------------------------- |
-| `/var/lib/radicale/collections`   | Calendar and contact data |
-| `/etc/radicale/users`             | User authentication file  |
-| `/etc/radicale/config`            | Radicale configuration    |
+| Path                            | Description               |
+| ------------------------------- | ------------------------- |
+| `/var/lib/radicale/collections` | Calendar and contact data |
+| `/etc/radicale/users`           | User authentication file  |
+| `/etc/radicale/config`          | Radicale configuration    |
 | `/var/lib/radicale/web/config.js` | InfCloud configuration    |
-| `/var/log/radicale`               | Radicale logs             |
+| `/var/log/radicale`             | Radicale logs             |
 
 ## GitHub Actions Setup
 
@@ -366,6 +369,10 @@ Perfect for personal cloud setups, small teams, or anyone wanting a self-hosted 
 - Multi-language support (15+ languages)
 - Clean SVG-based user interface
 - Drag & drop functionality
+- Full calendar and contact management
+- Event creation, editing, and scheduling
+- Contact management with groups
+- Multiple calendar/addressbook support
 
 While InfCloud's last release was in 2015 (v0.13.1), it remains a reliable and feature-complete solution for CalDAV/CardDAV web access.
 
