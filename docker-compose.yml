@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  radicale-infcloud:
+    image: yourusername/radicale-infcloud:latest
+    container_name: radicale
+    ports:
+      - "5232:5232" # Radicale CalDAV/CardDAV + InfCloud web interface
+    volumes:
+      # Data persistence
+      - ./data:/var/lib/radicale/collections
+
+      # Configuration files (optional - uncomment to customize)
+      # - ./config/users:/etc/radicale/users
+      # - ./config/radicale.conf:/etc/radicale/config
+      # - ./config/infcloud-config.js:/var/lib/radicale/web/config.js
+
+      # Logs (optional)
+      # - ./logs:/var/log/radicale
+
+    environment:
+      # Optional environment variables
+      - TZ=UTC
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5232/.web/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+# Optional: External network for reverse proxy
+# networks:
+#   default:
+#     name: radicale_network
+#   traefik:
+#     external: true
+
+# For production with SSL/TLS using Traefik:
+# services:
+#   radicale-infcloud:
+#     image: yourusername/radicale-infcloud:latest
+#     container_name: radicale
+#     volumes:
+#       - ./data:/var/lib/radicale/collections
+#       - ./config/users:/etc/radicale/users
+#     networks:
+#       - traefik
+#     labels:
+#       - "traefik.enable=true"
+#       - "traefik.http.routers.radicale.rule=Host(`cal.yourdomain.com`)"
+#       - "traefik.http.routers.radicale.tls.certresolver=letsencrypt"
+#       - "traefik.http.services.radicale.loadbalancer.server.port=80"
+#     restart: unless-stopped
+#
+# networks:
+#   traefik:
+#     external: true
