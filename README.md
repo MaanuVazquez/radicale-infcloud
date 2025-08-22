@@ -3,7 +3,7 @@
 A complete, ready-to-deploy Docker container that combines:
 
 - **Radicale** - CalDAV and CardDAV server
-- **InfCloud** - Modern web interface for calendar and contacts
+- **InfCloud** - Proven web interface for calendar and contacts (CalDAV/CardDAV web client)
 
 **Perfect for Portainer deployments!** This is a simplified, single-process container that runs everything through Radicale's built-in web server.
 
@@ -11,7 +11,7 @@ A complete, ready-to-deploy Docker container that combines:
 
 - 🚀 **Zero-configuration deployment** - Works out of the box
 - 🔒 **Secure by default** - Bcrypt password hashing, CORS headers
-- 🌐 **Web interface** - InfCloud served directly by Radicale
+- 🌐 **Web interface** - InfCloud (100% JavaScript CalDAV/CardDAV client) served directly by Radicale
 - 📱 **Mobile compatible** - Works with calendar and contact apps on all platforms
 - 🔄 **Auto-builds** - GitHub Actions automatically build and publish to Docker Hub
 - 🏥 **Health checks** - Built-in health monitoring
@@ -356,6 +356,21 @@ This project is released under the [Unlicense](LICENSE) - see the LICENSE file f
 
 Perfect for personal cloud setups, small teams, or anyone wanting a self-hosted calendar and contacts solution! 🎉
 
+## About InfCloud
+
+**InfCloud** is a mature, stable CalDAV/CardDAV web client from [inf-it.com](https://inf-it.com/open-source/clients/infcloud/) that provides:
+
+- 100% JavaScript+jQuery implementation
+- Full RFC compliant CalDAV/CardDAV support
+- Tested compatibility with Radicale (>=0.8)
+- Multi-language support (15+ languages)
+- Clean SVG-based user interface
+- Drag & drop functionality
+
+While InfCloud's last release was in 2015 (v0.13.1), it remains a reliable and feature-complete solution for CalDAV/CardDAV web access.
+
+**Browser Compatibility:** Safari/Mobile Safari, Webkit, iCab, Firefox, Opera (15+), and Chrome. Note: Internet Explorer is not supported.
+
 ## Portainer Deployment Guide
 
 This container is specifically designed for easy Portainer deployment:
@@ -410,7 +425,7 @@ Using Portainer's console:
 Or manually create users file:
 
 ```bash
-echo "username:$(python3 -c 'import bcrypt; print(bcrypt.hashpw(b\"password\", bcrypt.gensalt()).decode())')" >> /etc/radicale/users
+echo "admin:$(python3 -c 'import bcrypt; print(bcrypt.hashpw(b\"yourpassword\", bcrypt.gensalt()).decode())')" >> /etc/radicale/users
 ```
 
 ### Benefits for Portainer Users
